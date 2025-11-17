@@ -1,46 +1,13 @@
+'use client';
+
 import { Hero } from "@/components/Hero";
 import { Header } from "@/components/layout/Header";
 import { BlogCard } from "@/components/BlogCard";
+import { useBlogPosts } from "@/hooks/useBlog";
 
 const Index = () => {
-  const blogPosts = [
-    {
-      id: 1,
-      image: "/images/blog/blog-nature.jpg",
-      category: "ART",
-      title: "When Chocolate was Medicine: Colmenero, Wadsworth, and Dufour",
-      excerpt: "Between 1943 and 1945, with the help of Warner Bros.' finest, the U.S. Army produced a series of 27 propaganda cartoons...",
-      author: {
-        name: "Peter Reid",
-        avatar: "/images/blog/avatar-1.jpg",
-      },
-      date: "Feb 8, 2020",
-    },
-    {
-      id: 2,
-      image: "/images/blog/blog-design.jpg",
-      category: "MARKETING",
-      title: "The Human Pyramids of Juste De Juste (ca. 1540)",
-      excerpt: "Discover the fascinating history of human pyramids and their cultural significance in Renaissance Europe...",
-      author: {
-        name: "Sarah Mitchell",
-        avatar: "/images/blog/avatar-1.jpg",
-      },
-      date: "Oct 4, 2020",
-    },
-    {
-      id: 3,
-      image: "/images/blog/blog-tech.jpg",
-      category: "TECH",
-      title: "Building Modern Web Applications with TypeScript",
-      excerpt: "Explore the power of TypeScript, Express, and Next.js in creating robust, scalable web applications with PostgreSQL and Redis...",
-      author: {
-        name: "Alex Chen",
-        avatar: "/images/blog/avatar-1.jpg",
-      },
-      date: "Jan 15, 2024",
-    },
-  ];
+  // Fetch blog posts from Strapi
+  const { data: blogPosts, isLoading, error } = useBlogPosts();
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,20 +29,72 @@ const Index = () => {
           </p>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="space-y-12 md:space-y-16">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="grid md:grid-cols-2 gap-8 items-center bg-card rounded-lg overflow-hidden shadow-card animate-pulse"
+              >
+                <div className="h-64 md:h-full bg-muted" />
+                <div className="p-8 md:p-12 space-y-4">
+                  <div className="h-6 w-24 bg-muted rounded" />
+                  <div className="h-8 bg-muted rounded w-3/4" />
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-5/6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-destructive mb-4">
+              Failed to load blog posts. Please try again later.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {error instanceof Error ? error.message : 'An unknown error occurred'}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {/* Blog Posts Grid */}
-        <div className="space-y-12 md:space-y-16">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.id} {...post} />
-          ))}
-        </div>
+        {!isLoading && !error && blogPosts && blogPosts.length > 0 && (
+          <div className="space-y-12 md:space-y-16">
+            {blogPosts.map((post) => (
+              <BlogCard key={post.id} {...post} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && (!blogPosts || blogPosts.length === 0) && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">No blog posts found.</p>
+            <p className="text-sm text-muted-foreground">
+              Check your Strapi CMS configuration or create some blog posts.
+            </p>
+          </div>
+        )}
 
         {/* Footer CTA */}
-        <div className="mt-20 text-center">
-          <p className="text-muted-foreground mb-4">Want more stories like these?</p>
-          <button className="font-medium text-primary hover:underline underline-offset-4 transition-all">
-            View All Articles →
-          </button>
-        </div>
+        {!isLoading && !error && blogPosts && blogPosts.length > 0 && (
+          <div className="mt-20 text-center">
+            <p className="text-muted-foreground mb-4">Want more stories like these?</p>
+            <button className="font-medium text-primary hover:underline underline-offset-4 transition-all">
+              View All Articles →
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
