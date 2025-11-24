@@ -2,6 +2,7 @@
 
 import { Hero } from "@/components/Hero";
 import { Header } from "@/components/layout/Header";
+import { GigilAISection } from "@/components/GigilAISection";
 import { BlogCard } from "@/components/BlogCard";
 import { useBlogPosts } from "@/hooks/useBlog";
 
@@ -18,6 +19,8 @@ const Index = () => {
         <Hero />
       </section>
       
+      <GigilAISection />
+
       <main id="blog" className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         {/* Blog Section Header */}
         <div className="mb-16 text-center max-w-3xl mx-auto">

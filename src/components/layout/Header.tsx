@@ -38,6 +38,12 @@ export const Header = () => {
             <a href="#" className="text-sm font-medium text-white hover:text-white/80 transition-colors">
               About
             </a>
+            <button 
+              onClick={() => scrollToSection('gigil-ai')}
+              className="text-sm font-medium text-white hover:text-white/80 transition-colors"
+            >
+              Gigil AI
+            </button>
             <Button 
               variant="default" 
               size="sm" 
